@@ -11,21 +11,10 @@ const MainLayout = ({ children }) => {
   //   return <Navigate to="/login" />;
   // }
 
-  const { Content } = Layout;
-
   return (
-    <div>
-      {/* <Layout>
-        <MainSidebar />
-        <Layout>
-          <MainHeader />
-          <Content className="th-scrollbar"> */}
-            {children}
-          {/* </Content>
-        <MainFooter />
-        </Layout>
-      </Layout> */}
-    </div>
+    <>
+      {children}
+    </>
   );
 };
 

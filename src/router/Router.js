@@ -1,14 +1,14 @@
-import { lazy } from "react";
 
-// import Login from "./../containers/auth/Login";
-import Users from "../page/Users";
 import Home from "../page/Home";
+import ResumeTemplate from "../page/ResumeTemplate";
+import CreateResume from "../page/CreateResume";
+import Login from "../auth/Login";
 
 export const AuthRouter = [
   {
     path: "/login",
     exact: true,
-    component: Home,
+    component: Login,
   },
 ];
 
@@ -16,16 +16,16 @@ export const MainRouter = [
   {
     path: "/",
     exact: true,
-    component: Home
+    component: Home,
   },
   {
-    path: "/user",
+    path: "/resume-template",
     exact: true,
-    component: Users
+    component: ResumeTemplate,
   },
   {
-    path: "/users",
+    path: "/create-resume",
     exact: true,
-    component: Users
+    component: CreateResume,
   },
 ];

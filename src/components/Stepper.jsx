@@ -17,15 +17,7 @@ const Stepper = ({ current }) => {
     },
   ];
 
-  const items = steps.map((item) => ({
-    key: item.title,
-    title: item.title,
-  }));
-  return (
-    <>
-      <h1>current - {current} </h1>
-      <Steps current={current} items={items} />
-    </>
-  );
+  const items = steps.map((item) => ({ key: item.title, title: item.title }));
+  return <Steps current={current} items={items} />;
 };
 export default Stepper;
