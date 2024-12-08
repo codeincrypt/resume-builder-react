@@ -1,7 +1,6 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Layout } from "antd";
+import Headers from "../components/Header";
 
 const MainLayout = ({ children }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -11,21 +10,11 @@ const MainLayout = ({ children }) => {
   //   return <Navigate to="/login" />;
   // }
 
-  const { Content } = Layout;
-
   return (
-    <div>
-      {/* <Layout>
-        <MainSidebar />
-        <Layout>
-          <MainHeader />
-          <Content className="th-scrollbar"> */}
-      {children}
-      {/* </Content>
-        <MainFooter />
-        </Layout>
-      </Layout> */}
-    </div>
+    <>
+      <Headers />
+      <div className="margin-top">{children}</div>
+    </>
   );
 };
 

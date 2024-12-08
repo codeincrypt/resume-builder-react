@@ -1,6 +1,8 @@
-import React, {useState} from "react";
-import { Row, Col, Image } from "antd";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { Row, Col, Button } from "antd";
+
 import Template from "../components/Template";
 
 const ResumeTemplate = () => {
@@ -27,13 +29,14 @@ const ResumeTemplate = () => {
                 need to get hired faster. Use our resume templates and get free
                 access to 18 more career tools!
               </p>
-              <button
+              <Button
+                size="large"
                 type="primary"
+                className="btn-large"
                 onClick={() => navigate("/create-resume")}
-                className="main-btn"
               >
                 Create My Resume
-              </button>
+              </Button>
             </Col>
 
             <Col span={20} style={{ marginTop: "50px" }}>

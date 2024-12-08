@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
+
 import { Form, Row, Tag, Col, Input, Button, Space, DatePicker } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { v4 as uuidv4 } from "uuid";
 const { TextArea } = Input;
+
 import Stepper from "../components/Stepper";
 import { itSkills } from "../components/Constant";
 
@@ -63,8 +65,8 @@ const CreateResume = () => {
       // startdate: values["startdate"].format("YYYY-MM-DD"),
       uuid,
     };
-    console.log("data3", data);
-    setCurrent(2);
+    console.log("final- data", data);
+    // setCurrent(2);
   };
 
   const goBack = (e) => setCurrent(e);
@@ -79,8 +81,7 @@ const CreateResume = () => {
     setSkills([...skills, skill]);
   };
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div>
@@ -93,9 +94,9 @@ const CreateResume = () => {
             <Row justify="center">
               <Col span={20} className="text-center">
                 <h1 className="heading1 text-center">Add your name</h1>
-                <p className="text-center">
-                  You made a great template selection! Now let’s add your name
-                  to it.
+                <p className="text-center paragraph-muted">
+                  You made a great template selection! Now let's add your name
+                  to it
                 </p>
               </Col>
               <Col span={16}>
@@ -211,13 +212,19 @@ const CreateResume = () => {
                         name="city"
                         rules={[{ message: "Please input!" }]}
                       >
-                        <Input className="form-control" />
+                        <Input className="form-control"  />
                       </Form.Item>
                     </Col>
                     <Col span={12}></Col>
                   </Row>
                   <Col span={24}>
                     <h2>Professional Summary</h2>
+                    <p className="paragraph-muted">
+                      Write 2-4 short, energetic sentences about how great you
+                      are. Mention the role and what you did. What were the big
+                      achievements? Describe your motivation and list your
+                      skills.
+                    </p>
                   </Col>
 
                   <Col span={24}>
@@ -238,7 +245,7 @@ const CreateResume = () => {
 
                   <Col span={24}>
                     <h2>Employment History</h2>
-                    <p>
+                    <p className="paragraph-muted">
                       Show your relevent experience. Use bullet pont to note
                       your achievement, If possible - use number/facts (Achieve
                       X, measured by Y, by doing Z)
@@ -255,11 +262,10 @@ const CreateResume = () => {
                               style={{ display: "flex", marginBottom: 8 }}
                               align="baseline"
                             >
-                              <Row>
+                              <Row gutter={[20, 20]}>
                                 <Col span={24}>
-                                  <p> {JSON.stringify(restField)} </p>
                                   <Row justify="space-between">
-                                    <h2>({restField?.jobtitle})</h2>
+                                    <h2>Title : </h2>
                                     <h2>
                                       <MinusCircleOutlined
                                         onClick={() => remove(name)}
@@ -278,7 +284,7 @@ const CreateResume = () => {
                                       },
                                     ]}
                                   >
-                                    <Input placeholder="Job Title" />
+                                    <Input placeholder="Job Title" className="form-control" />
                                   </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -292,7 +298,7 @@ const CreateResume = () => {
                                       },
                                     ]}
                                   >
-                                    <Input placeholder="Employer" />
+                                    <Input placeholder="Employer" className="form-control" />
                                   </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -307,7 +313,7 @@ const CreateResume = () => {
                                     ]}
                                     {...datepickerConfig}
                                   >
-                                    <DatePicker />
+                                    <DatePicker className="form-control" />
                                   </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -321,7 +327,7 @@ const CreateResume = () => {
                                       },
                                     ]}
                                   >
-                                    <DatePicker />
+                                    <DatePicker className="form-control" />
                                   </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -335,7 +341,7 @@ const CreateResume = () => {
                                       },
                                     ]}
                                   >
-                                    <Input placeholder="City" />
+                                    <Input placeholder="City" className="form-control" />
                                   </Form.Item>
                                 </Col>
                               </Row>
@@ -358,7 +364,10 @@ const CreateResume = () => {
 
                   <Col span={24}>
                     <h2>Education</h2>
-                    <p>Show your</p>
+                    <p className="paragraph-muted">
+                      A varied education on your resume sums up the value that
+                      your learnings and background will bring to job.
+                    </p>
                   </Col>
 
                   <Col span={24}>
@@ -371,11 +380,11 @@ const CreateResume = () => {
                               style={{ display: "flex", marginBottom: 8 }}
                               align="baseline"
                             >
-                              <Row>
+                              <Row gutter={[20, 20]}>
                                 <Col span={24}>
                                   <p> {JSON.stringify(restField)} </p>
                                   <Row justify="space-between">
-                                    <h2>({restField?.jobtitle})</h2>
+                                    <h2>Title : </h2>
                                     <h2>
                                       <MinusCircleOutlined
                                         onClick={() => remove(name)}
@@ -394,7 +403,7 @@ const CreateResume = () => {
                                       },
                                     ]}
                                   >
-                                    <Input placeholder="School / College" />
+                                    <Input placeholder="School / College" className="form-control" />
                                   </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -408,7 +417,7 @@ const CreateResume = () => {
                                       },
                                     ]}
                                   >
-                                    <Input placeholder="Degree" />
+                                    <Input placeholder="Degree" className="form-control" />
                                   </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -423,7 +432,7 @@ const CreateResume = () => {
                                     ]}
                                     {...datepickerConfig}
                                   >
-                                    <DatePicker />
+                                    <DatePicker className="form-control" />
                                   </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -437,7 +446,7 @@ const CreateResume = () => {
                                       },
                                     ]}
                                   >
-                                    <DatePicker />
+                                    <DatePicker className="form-control" />
                                   </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -451,7 +460,7 @@ const CreateResume = () => {
                                       },
                                     ]}
                                   >
-                                    <Input placeholder="City" />
+                                    <Input placeholder="City" className="form-control" />
                                   </Form.Item>
                                 </Col>
                                 <Col span={24}>
@@ -493,7 +502,7 @@ const CreateResume = () => {
                   <Col span={24}>
                     {skills.map((skill, index) => (
                       <Tag
-                        key={index}
+                        key={skill}
                         color="geekblue"
                         onClick={() => selectSkill(skill)}
                         style={{ cursor: "pointer" }}
@@ -514,6 +523,85 @@ const CreateResume = () => {
                         {skill}
                       </Tag>
                     ))}
+                  </Col>
+
+                  <Col span={24}>
+                    <h2>Websites & Social Links</h2>
+                    <p className="paragraph-muted">
+                      You can add links to websites you want hiring managers to
+                      see! Perhaps It will be a link to your portfolio, LinkedIn
+                      profile, or personal website
+                    </p>
+                  </Col>
+
+                  
+
+                  <Col span={24}>
+                    <Form.List name="websitesocial">
+                      {(fields, { add, remove }) => (
+                        <>
+                          {fields.map(({ key, name, ...restField }) => (
+                            <Space
+                              key={key}
+                              style={{ display: "flex", marginBottom: 8 }}
+                              align="baseline"
+                            >
+                              <Row gutter={[20, 20]}>
+                                <Col span={24}>
+                                  <p> {JSON.stringify(restField)} </p>
+                                  <Row justify="space-between">
+                                    <h2>Title : </h2>
+                                    <h2>
+                                      <MinusCircleOutlined
+                                        onClick={() => remove(name)}
+                                      />
+                                    </h2>
+                                  </Row>
+                                </Col>
+                                <Col span={12}>
+                                  <Form.Item
+                                    {...restField}
+                                    name={[name, "label"]}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Missing label",
+                                      },
+                                    ]}
+                                  >
+                                    <Input className="form-control" />
+                                  </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                  <Form.Item
+                                    {...restField}
+                                    name={[name, "link"]}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Missing link",
+                                      },
+                                    ]}
+                                  >
+                                    <Input className="form-control" />
+                                  </Form.Item>
+                                </Col>
+                              </Row>
+                            </Space>
+                          ))}
+                          <Form.Item>
+                            <Button
+                              type="dashed"
+                              onClick={() => add()}
+                              block
+                              icon={<PlusOutlined />}
+                            >
+                              Add one more link
+                            </Button>
+                          </Form.Item>
+                        </>
+                      )}
+                    </Form.List>
                   </Col>
 
                   <Row justify={"space-between"}>

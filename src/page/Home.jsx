@@ -1,14 +1,15 @@
 import React from "react";
-import { Row, Col, Image } from "antd";
 import { useNavigate } from "react-router-dom";
+
+import { Row, Col, Image, Button } from "antd";
 
 const Home = () => {
   const navigate = useNavigate();
   return (
-    <div>
+    <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>
       <div className="page-hiw">
         <Row justify="center">
-          <Col span={8}>
+          <Col span={9}>
             <div className="jumbotron-header">
               <div className="page-title">
                 <p>Many resumes created today</p>
@@ -17,23 +18,24 @@ const Home = () => {
                   Only 2% of resumes win. Yours will be one of them. Let´s build
                   you a resume that works.
                 </p>
-                <button
+                <Button
+                  size="large"
                   type="primary"
-                  onClick={() => navigate("/resume-template")}
-                  className="main-btn"
+                  className="btn-large"
+                  onClick={() => navigate("/create-resume")}
                 >
                   Create My Resume
-                </button>
+                </Button>
               </div>
             </div>
           </Col>
 
           <Col span={2}></Col>
 
-          <Col span={8} style={{ marginTop: "50px" }}>
+          <Col span={9} style={{ marginTop: "50px" }}>
             <div className="jumbotron-footer text-center jumbotron-hiw">
               <Image
-              preview={false}
+                preview={false}
                 alt="resume-builder"
                 src="https://res.cloudinary.com/dpevovkcg/image/upload/v1733568218/resume-builder/om01qtvtcvi3fwcnad4a.png"
               />
@@ -41,7 +43,7 @@ const Home = () => {
           </Col>
         </Row>
       </div>
-    </div>
+    </Row>
   );
 };
 
