@@ -6,16 +6,16 @@ import { Row, Col, Image, Button } from "antd";
 const Home = () => {
   const navigate = useNavigate();
   return (
-    <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>
+    <Row justify="center" align="middle" style={{ minHeight: "80vh" }}>
       <div className="page-hiw">
         <Row justify="center">
           <Col span={9}>
             <div className="jumbotron-header">
               <div className="page-title">
-                <p>Many resumes created today</p>
+              <p className="paragraph">Many resumes created today</p>
                 <h1 className="heading1">The professional resume builder</h1>
                 <p className="paragraph">
-                  Only 2% of resumes win. Yours will be one of them. Let´s build
+                  Only 2% of resumes win. Yours will be one of them. Let's build
                   you a resume that works.
                 </p>
                 <Button

@@ -10,14 +10,19 @@ export const AuthRouter = [
     exact: true,
     component: Login,
   },
-];
-
-export const MainRouter = [
   {
     path: "/",
     exact: true,
     component: Home,
   },
+  {
+    path: "/home",
+    exact: true,
+    component: Home,
+  },
+];
+
+export const MainRouter = [
   {
     path: "/resume-template",
     exact: true,

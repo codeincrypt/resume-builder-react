@@ -1,5 +1,4 @@
 export const itSkills = [
-  "Programming Languages",
   "Web Development",
   "Database Management",
   "Networking",
@@ -13,13 +12,12 @@ export const itSkills = [
   "Artificial Intelligence",
   "Mobile App Development",
   "DevOps",
-  "Virtualization",
   "IT Support",
   "Systems Administration",
   "Business Intelligence",
   "IT Troubleshooting",
   "Automation",
-  "Agile Methodology",
+  "Agile",
   "UI/UX Design",
   "Big Data",
   "Internet of Things (IoT)",
@@ -56,6 +54,50 @@ export const itSkills = [
   "IT Strategy",
 ];
 
+export const itJobDesignations = [
+  "Software Engineer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Full Stack Developer",
+  "Mobile Application Developer",
+  "DevOps Engineer",
+  "Cloud Engineer",
+  "Data Scientist",
+  "Data Analyst",
+  "Machine Learning Engineer",
+  "AI Engineer",
+  "Database Administrator",
+  "Systems Administrator",
+  "Network Administrator",
+  "Cybersecurity Analyst",
+  "IT Support Specialist",
+  "IT Project Manager",
+  "Product Manager",
+  "UI/UX Designer",
+  "QA Engineer",
+  "Automation Tester",
+  "IT Business Analyst",
+  "Scrum Master",
+  "IT Consultant",
+  "Tech Lead",
+  "Software Architect",
+  "Solution Architect",
+  "Infrastructure Engineer",
+  "Penetration Tester",
+  "Technical Writer",
+  "Game Developer",
+  "Blockchain Developer",
+  "Site Reliability Engineer (SRE)",
+  "Technical Support Engineer",
+  "Helpdesk Technician",
+  "ERP Specialist",
+  "IT Trainer",
+  "CRM Specialist",
+  "SEO Specialist",
+  "IT Operations Manager",
+];
+
+
 export const resumeTemplate = [
   {
     id: 1,
@@ -89,12 +131,26 @@ export const resumeTemplate = [
   },
 ]
 
-const selectSkill = (skill) => {
-  setSkills(skills.filter((s) => s !== skill));
-  setSelectedSkills([...selectedSkills, skill]);
-};
+export const datepickerConfig = {
+  rules: [
+    {
+      type: "object",
+      required: true,
+      message: "Please select time!",
+    },
+  ],
+}
 
-const removeSelectedSkill = (skill) => {
-  setSelectedSkills(selectedSkills.filter((s) => s !== skill));
-  setSkills([...skills, skill]);
-};
+export const initialValue = {
+  fname: "",
+  lname: "",
+  email: "",
+  jobtitle: "",
+  phone: "",
+  country: "",
+  city: "",
+  address: "",
+  postalcode: "",
+  nationality: "",
+  dob: "",
+}
