@@ -27,14 +27,19 @@ import {
 const CreateResume = () => {
   const [current, setCurrent] = useState(0);
   const [template, setTemplate] = useState("");
+  const [jobTitleData, setJobTitleData] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
   const [skills, setSkills] = useState(itSkills);
   const [selectedSkills, setSelectedSkills] = useState([]);
-  const user = useSelector((state) => state.user);
+
   const [uuid] = useState(uuidv4());
   const dispatch = useDispatch();
 
   const [form] = Form.useForm();
   const variant = Form.useWatch("variant", form);
+
+  let timeout;
+  let currentValue;
 
   const fetch = (value, callback) => {
     if (timeout) {
@@ -45,8 +50,8 @@ const CreateResume = () => {
     const fake = () => {
       if (currentValue === value) {
         const data = itJobDesignations.map((item) => ({
-          value: item[0],
-          text: item[0],
+          value: item,
+          text: item,
         }));
         callback(data);
       }
@@ -59,10 +64,10 @@ const CreateResume = () => {
   };
 
   const handleSearch = (newValue) => {
-    fetch(newValue, setData);
+    fetch(newValue, setJobTitleData);
   };
 	const handleChange = (newValue) => {
-    // setValue(newValue);
+    setJobTitle(newValue);
   };
 
   const [formData, setFormData] = useState(initialValue);
@@ -89,6 +94,19 @@ const CreateResume = () => {
     console.log("final- data", data);
     // setCurrent(2);
   };
+
+  const Searchstyle = {
+    borderRadius: 3,
+    // padding: 12px 16px;
+    width: "100%",
+    display: "block",
+    caretColor: "rgb(26, 145, 240)",
+    backgroundColor: "rgb(239, 242, 249)",
+    borderBottom:" 2px solid transparent",
+    outline: "none",
+    color: "rgb(30, 37, 50)",
+    transition:" color 0.1s"
+  }
 
   const goBack = (e) => setCurrent(e);
 
@@ -181,21 +199,19 @@ const CreateResume = () => {
                       >
                         <Select
                           showSearch
-                          value={value}
-                          placeholder={props.placeholder}
-                          style={props.style}
+                          value={jobTitle}
+                          // style={Searchstyle}
                           defaultActiveFirstOption={false}
                           suffixIcon={null}
                           filterOption={false}
                           onSearch={handleSearch}
                           onChange={handleChange}
                           notFoundContent={null}
-                          options={(data || []).map((d) => ({
+                          options={(jobTitleData || []).map((d) => ({
                             value: d.value,
                             label: d.text,
                           }))}
                         />
-                        {/* <Input className="form-control" /> */}
                       </Form.Item>
                     </Col>
                     <Col span={12}>
