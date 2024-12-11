@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Layout, Button, Row, Col, Flex } from "antd";
+import { Layout, Button, Row, Col, Flex, Avatar } from "antd";
 import { googleLogout } from "@react-oauth/google";
 
 import { logout } from "../store/slices/authSlice";
@@ -38,8 +38,8 @@ const Headers = () => {
                 Templates
               </Link>
               {user && (
-                <Link className="menu-item" to="/templates">
-                  {user?.name}
+                <Link className="menu-item" to="/profile">
+                  <Avatar src={user?.picture} /> {user?.name}
                 </Link>
               )}
 

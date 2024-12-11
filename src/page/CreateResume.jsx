@@ -49,11 +49,13 @@ const CreateResume = () => {
     currentValue = value;
     const fake = () => {
       if (currentValue === value) {
-        const data = itJobDesignations.map((item) => ({
-          value: item,
-          text: item,
-        }));
-        callback(data);
+        const filteredData = itJobDesignations
+          .filter((item) => item.toLowerCase().includes(value.toLowerCase()))
+          .map((item) => ({
+            value: item,
+            text: item,
+          }));
+        callback(filteredData);
       }
     };
     if (value) {
@@ -75,6 +77,7 @@ const CreateResume = () => {
   const handleStep1 = (values) => {
     const data = {
       ...values,
+      jobTitle,
       skills: selectedSkills,
       uuid,
     };
@@ -200,7 +203,6 @@ const CreateResume = () => {
                         <Select
                           showSearch
                           value={jobTitle}
-                          // style={Searchstyle}
                           defaultActiveFirstOption={false}
                           suffixIcon={null}
                           filterOption={false}
