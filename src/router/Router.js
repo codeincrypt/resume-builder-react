@@ -1,9 +1,11 @@
 
-import Home from "../page/Home";
-import ResumeTemplate from "../page/ResumeTemplate";
-import CreateResume from "../page/CreateResume";
+import Home from "../main/Home";
 import Login from "../auth/Login";
+import ResumeTemplate from "../main/ResumeTemplate";
+
+import CreateResume from "../page/CreateResume";
 import Profile from "../page/Profile";
+import MyResume from "../page/MyResume";
 
 export const AuthRouter = [
   {
@@ -33,6 +35,11 @@ export const MainRouter = [
     path: "/profile",
     exact: true,
     component: Profile,
+  },
+  {
+    path: "/my-resume",
+    exact: true,
+    component: MyResume,
   },
   {
     path: "/create-resume",

@@ -78,25 +78,41 @@ body {
   right: 0;
   top: 0;
   background-color: white;
+  z-index: 999;
 }
 
 .nav__bar {
   align-items: center;
-  background-color: white;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  padding: 15px 50px;
+  padding-inline: 50px;
   position: relative;
   transition: transform 0.25s ease-in-out;
   will-change: transform;
-  z-index: 999;
 }
 
-.margin-top {
-  margin-top: 100px;
+
+.nav__content {
+  background-color: #fff; /* Adjust header background */
+  padding: 0 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
 }
 
 .menu-item {
-  padding: 10px;
+  margin: 0 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
 }
+
+.menu-item:hover {
+  color: #1890ff; /* Hover effect */
+}
+
+@media (max-width: 768px) {
+  .menu-item {
+    display: none; /* Hide menu items on small screens */
+  }
+}
+

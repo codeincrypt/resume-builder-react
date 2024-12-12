@@ -54,6 +54,8 @@ export const itSkills = [
   "IT Strategy",
 ];
 
+export const logo = "https://res.cloudinary.com/dpevovkcg/image/upload/v1733678889/logo_kpeqxl.svg"
+
 export const itJobDesignations = [
   "Software Engineer",
   "Frontend Developer",
