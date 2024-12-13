@@ -4,8 +4,10 @@ import { useDispatch } from "react-redux";
 
 import { useGoogleLogin } from "@react-oauth/google";
 import { Col, Row, Button } from "antd";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa"
+;
 import { login } from "../store/slices/authSlice";
+import { addUser } from "../database/request";
 
 const Login = () => {
   const [user, setUser] = useState([]);
@@ -31,8 +33,9 @@ const Login = () => {
           console.error("Error fetching profile:", data.error);
           return;
         }
-        dispatch(login(data))
         console.log("Profile Data:", data);
+        await addUser(data.id, data.name, data.email)
+        dispatch(login(data))
         navigate("/home")
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -40,9 +43,22 @@ const Login = () => {
     };
   
     if (user) {
-      fetchProfile();
+      // fetchProfile();
     }
   }, [user]);
+
+  const addDatas = () => {
+    const data = {
+      "id": "105805642170424092666",
+      "email": "dev.kartikswarnkar@gmail.com",
+      "verified_email": true,
+      "name": "Kartik Swarnkar",
+      "given_name": "Kartik",
+      "family_name": "Swarnkar",
+      "picture": "https://lh3.googleusercontent.com/a/ACg8ocJGVB6qLTDlHkgO4D1AiIGndHPzITwrL-O0LJC6863XepJBELk=s96-c"
+  }
+    addUser(data.id, data.name, data.email)
+  };
 
   return (
     <Row justify="center" align="middle" style={{ minHeight: "80vh" }}>
@@ -59,7 +75,8 @@ const Login = () => {
               type="primary"
               icon={<FaGoogle />}
               className="btn-large"
-              onClick={() => getLogin()}
+              onClick={() => addDatas()}
+              // onClick={() => getLogin()}
             >
               Google
             </Button>
