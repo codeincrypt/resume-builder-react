@@ -7,7 +7,7 @@ import { Col, Row, Button } from "antd";
 import { FaGoogle } from "react-icons/fa"
 ;
 import { login } from "../store/slices/authSlice";
-import { addUser } from "../database/request";
+import { loginUser } from "../database/request";
 
 const Login = () => {
   const [user, setUser] = useState([]);
@@ -33,8 +33,7 @@ const Login = () => {
           console.error("Error fetching profile:", data.error);
           return;
         }
-        console.log("Profile Data:", data);
-        await addUser(data.id, data.name, data.email)
+        await loginUser(data.id, data.name, data.email, data.given_name, data.family_name, data.picture)
         dispatch(login(data))
         navigate("/home")
       } catch (error) {
@@ -43,22 +42,9 @@ const Login = () => {
     };
   
     if (user) {
-      // fetchProfile();
+      fetchProfile();
     }
   }, [user]);
-
-  const addDatas = () => {
-    const data = {
-      "id": "105805642170424092666",
-      "email": "dev.kartikswarnkar@gmail.com",
-      "verified_email": true,
-      "name": "Kartik Swarnkar",
-      "given_name": "Kartik",
-      "family_name": "Swarnkar",
-      "picture": "https://lh3.googleusercontent.com/a/ACg8ocJGVB6qLTDlHkgO4D1AiIGndHPzITwrL-O0LJC6863XepJBELk=s96-c"
-  }
-    addUser(data.id, data.name, data.email)
-  };
 
   return (
     <Row justify="center" align="middle" style={{ minHeight: "80vh" }}>
@@ -75,8 +61,7 @@ const Login = () => {
               type="primary"
               icon={<FaGoogle />}
               className="btn-large"
-              onClick={() => addDatas()}
-              // onClick={() => getLogin()}
+              onClick={() => getLogin()}
             >
               Google
             </Button>
