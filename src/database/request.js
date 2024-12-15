@@ -44,11 +44,44 @@ export const loginUser = async (id, name, email, given_name, family_name, pictur
     };
   } catch (error) {
     console.error("Error in Adding or Fetching User", error);
-    throw error; // Propagate the error for handling in the calling function
+    throw error;
   }
 };
 
 
-export const updateResume = () => {
+export const updateResume = async (user_id) => {
   // Update resume data
+  try {
+    const resumeCollection = collection(db, "resumes");
+
+    const userQuery = query(resumeCollection, where("user_id", "==", user_id));
+    const querySnapshot = await getDocs(userQuery);
+
+    // If user doesn't exist, insert the user
+    const response = await addDoc(resumeCollection, {
+      user_id: user_id,
+      resume_data: resume_data,
+      updatedAt: new Date(),
+    });
+  } catch (error) {
+    console.error("Error in updating resume data", error);
+    throw error;
+  }
+};
+
+
+export const getResume = async (user_id) => {
+  try {
+    const userQuery = query(collection(db, "resumes"), where("user_id", "==", user_id));
+    const querySnapshot = await getDocs(userQuery);
+    if (!querySnapshot.empty) {
+      const resumeData = querySnapshot.docs[0].data();
+      return resumeData
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error in updating resume data", error);
+    throw error;
+  }
 };

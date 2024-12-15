@@ -5,10 +5,14 @@ import storage from "redux-persist/lib/storage";
 
 import userSlice from "./slices/userSlice";
 import authSlice from "./slices/authSlice";
+import resumeSlice from "./slices/resumeSlice";
+import templateSlice from "./slices/templateSlice";
 
 const rootReducer = combineReducers({
-  auth: authSlice,
-  user: userSlice,
+  auth    : authSlice,
+  user    : userSlice,
+  resume  : resumeSlice,
+  template: templateSlice,
 });
 
 const persistConfig = {

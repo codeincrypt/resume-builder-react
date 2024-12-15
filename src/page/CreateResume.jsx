@@ -25,8 +25,8 @@ import {
 } from "../components/Constant";
 
 const CreateResume = () => {
+  const template = useSelector((state) => state.template);
   const [current, setCurrent] = useState(0);
-  const [template, setTemplate] = useState("");
   const [jobTitleData, setJobTitleData] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [skills, setSkills] = useState(itSkills);
@@ -130,6 +130,7 @@ const CreateResume = () => {
       <Row justify="center">
         <Col span={16}>
           <Stepper current={current} />
+          <p> template: {JSON.stringify(template)} </p>
         </Col>
         <Col span={16}>
           {current === 0 ? (

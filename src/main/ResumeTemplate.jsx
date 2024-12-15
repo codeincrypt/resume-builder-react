@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { Row, Col, Button } from "antd";
 
 import Template from "../components/Template";
+import { setTemplate } from "../store/slices/templateSlice";
 
 const ResumeTemplate = () => {
-  const [template, setTemplate] = useState("");
+  const dispatch = useDispatch()
   const navigate = useNavigate();
   const selectTemplate = (e) => {
-    setTemplate(e);
-    setCurrent(1);
+    dispatch(setTemplate(e))
+    navigate("/create-resume")
   };
 
   return (
