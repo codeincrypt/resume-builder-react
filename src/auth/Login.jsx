@@ -33,8 +33,8 @@ const Login = () => {
           console.error("Error fetching profile:", data.error);
           return;
         }
-        await loginUser(data.id, data.name, data.email, data.given_name, data.family_name, data.picture)
-        dispatch(login(data))
+        const {uuid} = await loginUser(data.id, data.name, data.email, data.given_name, data.family_name, data.picture)
+        dispatch(login({...data, uuid}))
         navigate("/home")
       } catch (error) {
         console.error("Error fetching profile:", error);

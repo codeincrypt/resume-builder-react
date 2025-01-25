@@ -1,5 +1,6 @@
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { v4 as uuidv4 } from "uuid";
 
 export const loginUser = async (id, name, email, given_name, family_name, picture) => {
   try {
@@ -11,7 +12,9 @@ export const loginUser = async (id, name, email, given_name, family_name, pictur
 
     if (!querySnapshot.empty) {
       const userData = querySnapshot.docs[0].data();
+
       return {
+        uuid: userData.uuid,
         id: userData.id,
         name: userData.name,
         email: userData.email,
@@ -20,28 +23,18 @@ export const loginUser = async (id, name, email, given_name, family_name, pictur
         picture: userData.picture,
         message: "User fetched from database",
       };
+    } else {
+      const uuid = uuidv4()
+      await addDoc(userCollection, {
+        uuid, id, name, email, given_name, family_name, picture,
+        createdAt: new Date(),
+      });
+
+      return {
+        uuid, id, name, email, given_name, family_name, picture,
+        message: "New user registered successfully",
+      };
     }
-
-    // If user doesn't exist, insert the user
-    const response = await addDoc(userCollection, {
-      id,
-      name,
-      email,
-      given_name,
-      family_name,
-      picture,
-      createdAt: new Date(),
-    });
-
-    return {
-      id,
-      name,
-      email,
-      given_name,
-      family_name,
-      picture,
-      message: "New user registered successfully",
-    };
   } catch (error) {
     console.error("Error in Adding or Fetching User", error);
     throw error;
@@ -49,20 +42,33 @@ export const loginUser = async (id, name, email, given_name, family_name, pictur
 };
 
 
-export const updateResume = async (user_id) => {
-  // Update resume data
+export const updateResume = async (user_id, resume_data) => {
   try {
+    const exist_data = await getResume(user_id)
     const resumeCollection = collection(db, "resumes");
 
-    const userQuery = query(resumeCollection, where("user_id", "==", user_id));
-    const querySnapshot = await getDocs(userQuery);
+    if (exist_data) {
+      const userQuery = query(resumeCollection, where("user_id", "==", user_id));
+      const querySnapshot = await getDocs(userQuery);
 
-    // If user doesn't exist, insert the user
-    const response = await addDoc(resumeCollection, {
-      user_id: user_id,
-      resume_data: resume_data,
-      updatedAt: new Date(),
-    });
+      if (!querySnapshot.empty) {
+        const docId = querySnapshot.docs[0].id;
+        await updateDoc(doc(db, "resumes", docId), {
+          resume: resume_data,
+          updatedAt: new Date(),
+        });
+      }
+    } else {
+      const uuid = uuidv4()
+      const data = {
+        user_id: user_id,
+        uuid: uuid,
+        resume: resume_data,
+        updatedAt: new Date(),
+      };
+      const docRef = await addDoc(collection(db, "resumes"), data);
+      console.log("Document written with ID: ", docRef.id);
+    }
   } catch (error) {
     console.error("Error in updating resume data", error);
     throw error;
@@ -72,7 +78,8 @@ export const updateResume = async (user_id) => {
 
 export const getResume = async (user_id) => {
   try {
-    const userQuery = query(collection(db, "resumes"), where("user_id", "==", user_id));
+    const resumeCollection = collection(db, "resumes");
+    const userQuery = query(resumeCollection, where("user_id", "==", user_id));
     const querySnapshot = await getDocs(userQuery);
     if (!querySnapshot.empty) {
       const resumeData = querySnapshot.docs[0].data();
@@ -81,7 +88,7 @@ export const getResume = async (user_id) => {
       return null;
     }
   } catch (error) {
-    console.error("Error in updating resume data", error);
+    console.error("Error in getting resume data", error);
     throw error;
   }
-};
+}

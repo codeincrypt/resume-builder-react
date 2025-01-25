@@ -13,7 +13,7 @@ import {
   Select,
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { v4 as uuidv4 } from "uuid";
+
 const { TextArea } = Input;
 
 import Stepper from "../components/Stepper";
@@ -23,16 +23,18 @@ import {
   itJobDesignations,
   initialValue,
 } from "../components/Constant";
+import { updateResume } from "../database/request";
 
 const CreateResume = () => {
+  const user = useSelector((state) => state.auth.user);
   const template = useSelector((state) => state.template);
+
   const [current, setCurrent] = useState(0);
   const [jobTitleData, setJobTitleData] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [skills, setSkills] = useState(itSkills);
   const [selectedSkills, setSelectedSkills] = useState([]);
 
-  const [uuid] = useState(uuidv4());
   const dispatch = useDispatch();
 
   const [form] = Form.useForm();
@@ -74,23 +76,20 @@ const CreateResume = () => {
 
   const [formData, setFormData] = useState(initialValue);
 
-  const handleStep1 = (values) => {
-    const data = {
-      ...values,
-      jobTitle,
-      skills: selectedSkills,
-      uuid,
-    };
-    console.log("data2", data);
+  const handleStep1 = async (values) => {
+    console.log("values", values);
     setFormData({
       ...formData,
     });
+    await updateResume(user.uuid, values)
     setCurrent(1);
   };
 
   const handleStep3 = (values) => {
     const data = {
       ...values,
+      jobTitle,
+      skills: selectedSkills,
       // startdate: values["startdate"].format("YYYY-MM-DD"),
       uuid,
     };

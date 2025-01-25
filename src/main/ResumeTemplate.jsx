@@ -6,12 +6,15 @@ import { Row, Col, Button } from "antd";
 
 import Template from "../components/Template";
 import { setTemplate } from "../store/slices/templateSlice";
+import { resumeTemplate } from "../components/Constant";
 
 const ResumeTemplate = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate();
+
   const selectTemplate = (e) => {
-    dispatch(setTemplate(e))
+    const data = (e === null || e === undefined) ? resumeTemplate.find((item) => item.id === 1) : e 
+    dispatch(setTemplate(data))
     navigate("/create-resume")
   };
 
@@ -35,7 +38,7 @@ const ResumeTemplate = () => {
                 size="large"
                 type="primary"
                 className="btn-large"
-                onClick={() => navigate("/create-resume")}
+                onClick={() => selectTemplate(null)}
               >
                 Create My Resume
               </Button>

@@ -6,7 +6,7 @@ import { getResume } from '../database/request';
 
 const MyResume = () => {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.auth.user?.id); // Assuming user ID is in auth state
+  const userId = useSelector((state) => state.auth.user?.id);
   const resumeData = useSelector((state) => state.resume.data);
 
   const fetchResumeFromAPI = (user_id) => {
@@ -18,12 +18,7 @@ const MyResume = () => {
     if (!resumeData && userId) {
       const fetchData = async () => {
         try {
-          const response = await fetchResumeFromAPI(userId); // API call function
-          if(response === null) {
-            // return SiAwselasticloadbalancing(false)
-          }
-          console.log("response", response)
-          // dispatch(updateResume(response)); // Dispatch action to set data in Redux
+          const response = await fetchResumeFromAPI(userId);
         } catch (error) {
           console.error('Error fetching resume data:', error);
         }

@@ -5,7 +5,18 @@ body {
   font-weight: 500;
   font-style: normal;
 }
-
+.ant-select-selector .selector{
+  border-radius: 3px;
+  padding: 12px 16px;
+  width: 100%;
+  display: block;
+  caret-color: rgb(26, 145, 240);
+  background-color: rgb(239, 242, 249);
+  border-bottom: 2px solid transparent;
+  outline: none;
+  color: rgb(30, 37, 50);
+  transition: color 0.1s;
+}
 .form-control {
   border-radius: 3px;
   padding: 12px 16px;
@@ -68,7 +79,7 @@ body {
 }
 
 .btn-large {
-  padding: 25px 60px 24px 50px;
+  padding:30px 60px 30px 60px;
   border-radius: 4px;
 }
 
@@ -93,12 +104,6 @@ body {
 }
 
 
-.nav__content {
-  background-color: #fff; /* Adjust header background */
-  padding: 0 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
-}
-
 .menu-item {
   margin: 0 8px;
   font-size: 16px;
@@ -116,3 +121,48 @@ body {
   }
 }
 
+@media (min-width: 1024px) {
+  .home-counter-container {
+      grid-gap: 160px;
+      padding-left: 110px;
+  }
+}
+.home-counter-info {
+  grid-gap: 20px;
+  display: flex;
+}
+.home-counter-container {
+  grid-gap: 20px;
+  background-color: var(--blue-10);
+  border-radius: 12px;
+  display: flex;
+  margin: 32px auto 12px;
+  max-width: calc(var(--container-width) + 88px);
+  padding: 14px 24px;
+}
+.home__counter-number-container {
+  background-color: hsla(0, 0%, 100%, .5);
+  border-radius: 8px;
+  color: var(--blue-80);
+  font-size: 46px;
+  font-weight: 700;
+  font-weight: 400;
+  line-height: 48px;
+  margin: auto 0;
+  padding: 10px;
+}
+.home__counter-number-label {
+  color: var(--blue-80);
+  font-size: 32px;
+  line-height: 34px;
+  margin: auto 0;
+}
+
+.home__button {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.ant-btn-primary {
+  background: #1a91f0;
+}
