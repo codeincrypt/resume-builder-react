@@ -147,6 +147,13 @@ column across pages (`findGutter` / `orderByColumns`). Tests:
   in build config matches every path — match after `node_modules/` (see
   [vite.config.ts](vite.config.ts)).
 - **Node 20 `node --test` doesn't expand globs** — `npm test` names the file.
+- **The lockfile must list every platform's native binding** for rolldown and
+  lightningcss (npm/cli#4828). A lockfile regenerated from an existing
+  `node_modules` on macOS can keep only `*-darwin-arm64`, and Netlify (Linux)
+  then fails with "Cannot find native binding". Check with
+  `grep -c binding-linux-x64-gnu package-lock.json` before pushing. Don't
+  follow rolldown's "delete package-lock.json" advice: npm 10.8 resolving from
+  scratch crashes on the optional `canvas` peer ("reading 'edgesOut'").
 - **Recent firebase-tools needs Java 21+** for the emulators; firebase-tools 13
   still runs on Java 17.
 
