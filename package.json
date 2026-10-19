@@ -3,7 +3,7 @@
   "private": true,
   "version": "3.0.0",
   "type": "module",
-  "description": "CapitalCV \u2014 upload or build a resume, pick from 25 capital-city templates, download a PDF.",
+  "description": "CapitalCV — upload or build a resume, pick from 25 capital-city templates, download a PDF.",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
@@ -36,7 +36,7 @@
     "@reduxjs/toolkit": "^2.12.0",
     "antd": "^6.6.1",
     "dayjs": "^1.11.13",
-    "firebase": "^12.17.1",
+    "firebase": "^12.19.0",
     "html2canvas-pro": "^2.3.8",
     "jspdf": "^4.2.1",
     "mammoth": "^1.13.0",
