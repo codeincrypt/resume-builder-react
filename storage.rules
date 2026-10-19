@@ -1,0 +1,24 @@
+rules_version = '2';
+
+// CapitalCV Cloud Storage rules: uploaded originals only, private to the
+// owner, PDF / DOCX / TXT, under 10 MB.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    match /users/{uid}/uploads/{allPaths=**} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+
+      allow create, update: if request.auth != null
+        && request.auth.uid == uid
+        && request.auth.token.email_verified == true
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches(
+          'application/pdf|application/vnd\\.openxmlformats-officedocument\\.wordprocessingml\\.document|text/plain'
+        );
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

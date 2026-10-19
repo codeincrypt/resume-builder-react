@@ -1,0 +1,881 @@
+/*
+ * Resume template styling — one stylesheet, driven by modifier classes.
+ *
+ * ResumeSheet.tsx sets the root class list from the template spec
+ * (rt-l-* layout, rt-hd-* header, rt-h-* heading, rt-e-* entry, rt-s-* skills,
+ * rt-b-* bullet) and the palette / type / spacing as CSS custom properties on
+ * the root element. Because the variables are declared inline on `.rt`
+ * itself, the PDF exporter's cloned document resolves them — they must never
+ * be declared on :root or an ancestor outside the capture.
+ *
+ * Vertical spacing uses flex `gap`, never margins, so the paginator can push
+ * a block to the next page with `margin-top` and have it add exactly (margins
+ * between siblings would collapse instead of summing).
+ *
+ * `.rt` is a fixed pixel width (--page-w): 794px = A4 and 816px = US Letter at
+ * 96dpi, so what is on screen is what lands in the PDF.
+ */
+
+.rt {
+  width: var(--page-w);
+  min-height: var(--page-h);
+  background: #ffffff;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs);
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  text-align: left;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  font-synthesis: none;
+  /* Start from known values: the sheet may sit inside a button, a link or a
+     modal whose inherited text styles must not reach the résumé. */
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-indent: 0;
+  text-shadow: none;
+  white-space: normal;
+}
+
+.rt *,
+.rt *::before,
+.rt *::after {
+  box-sizing: border-box;
+}
+
+/* Zero-specificity reset, so every template rule below wins over it. */
+:where(.rt) :where(h1, h2, h3, p, ul, li, article, section, header, aside, main) {
+  margin: 0;
+  padding: 0;
+}
+:where(.rt) :where(h1, h2, h3) {
+  font-size: 1em;
+  font-weight: 700;
+  letter-spacing: normal;
+  line-height: inherit;
+  color: inherit;
+}
+
+:where(.rt) ul {
+  list-style: none;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.rt-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  padding: var(--pad-y) var(--pad-x) 0;
+}
+
+.rt-id {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  min-width: 0;
+}
+
+.rt-name {
+  font-family: var(--font-head);
+  font-size: var(--name-size);
+  font-weight: var(--name-weight);
+  letter-spacing: var(--name-ls);
+  text-transform: var(--name-tt);
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.rt-jobtitle {
+  font-size: 1.12em;
+  font-weight: 500;
+  color: var(--accent-text);
+}
+
+.rt-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15em 1.1em;
+  color: var(--muted);
+  font-size: 0.92em;
+}
+
+.rt-header .rt-contact li + li::before {
+  content: "•";
+  margin-right: 1.1em;
+  margin-left: -0.55em;
+  color: var(--accent-mid);
+}
+
+.rt-header .rt-contact li:first-child {
+  margin-left: 0;
+}
+
+/* centered */
+.rt-hd-center .rt-header {
+  align-items: center;
+  text-align: center;
+}
+.rt-hd-center .rt-id {
+  align-items: center;
+}
+.rt-hd-center .rt-contact {
+  justify-content: center;
+}
+
+/* split: name left, contact stacked right */
+.rt-hd-split .rt-header {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5em;
+}
+.rt-hd-split .rt-contact {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  text-align: right;
+  gap: 0.1em;
+}
+.rt-hd-split .rt-header .rt-contact li + li::before {
+  content: none;
+}
+
+/* bar: heavy accent rule at the left */
+.rt-hd-bar .rt-header {
+  padding-left: calc(var(--pad-x) - 0.25em);
+}
+.rt-hd-bar .rt-id {
+  border-left: 0.32em solid var(--accent);
+  padding-left: 0.7em;
+}
+
+/* banner: full-bleed colour band */
+.rt-hd-banner .rt-header {
+  background: var(--ink);
+  color: var(--on-ink);
+  padding: calc(var(--pad-y) * 0.85) var(--pad-x);
+}
+.rt-hd-banner .rt-name {
+  color: var(--on-ink);
+}
+.rt-hd-banner .rt-jobtitle {
+  color: var(--on-ink);
+  opacity: 0.88;
+}
+.rt-hd-banner .rt-contact {
+  color: var(--on-ink-muted);
+}
+.rt-hd-banner .rt-header .rt-contact li + li::before {
+  color: var(--on-ink-muted);
+}
+
+/* -------------------------------------------------------------- body grid */
+
+.rt-body {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.rt-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sp) * 1.3em);
+  padding: var(--pad-y) var(--pad-x);
+}
+
+.rt-main {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sp) * 1.3em);
+  min-width: 0;
+}
+
+/* Under a full-width header the columns start closer to it. */
+.rt-has-top .rt-col,
+.rt-has-top .rt-side {
+  padding-top: calc(var(--sp) * 1.4em);
+}
+.rt-hd-banner.rt-has-top .rt-col,
+.rt-hd-banner.rt-has-top .rt-side {
+  padding-top: calc(var(--pad-y) * 0.7);
+}
+
+.rt-side {
+  flex: 0 0 31%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sp) * 1.3em);
+  padding: var(--pad-y) calc(var(--pad-x) * 0.65);
+}
+
+/* split: plain secondary column, separated by a hairline */
+.rt-l-split-right .rt-col,
+.rt-l-split-left .rt-col {
+  flex: 1 1 0;
+}
+.rt-l-split-right .rt-col {
+  padding-right: calc(var(--pad-x) * 0.6);
+}
+.rt-l-split-right .rt-side {
+  border-left: 1px solid var(--rule);
+  padding-left: calc(var(--pad-x) * 0.6);
+  padding-right: var(--pad-x);
+  flex-basis: 32%;
+}
+.rt-l-split-left .rt-col {
+  padding-left: calc(var(--pad-x) * 0.6);
+}
+.rt-l-split-left .rt-side {
+  border-right: 1px solid var(--rule);
+  padding-right: calc(var(--pad-x) * 0.6);
+  padding-left: var(--pad-x);
+  flex-basis: 30%;
+}
+
+/* sidebar: coloured rail */
+.rt-l-sidebar-left .rt-side,
+.rt-l-sidebar-right .rt-side {
+  background: var(--ink);
+  color: var(--on-ink);
+  flex-basis: 30%;
+}
+.rt-l-sidebar-left .rt-col {
+  padding-left: calc(var(--pad-x) * 0.8);
+}
+.rt-l-sidebar-right .rt-col {
+  padding-right: calc(var(--pad-x) * 0.8);
+}
+
+/* ---------------------------------------------------------------- sections */
+
+.rt-sec {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sp) * 0.7em);
+  min-width: 0;
+}
+
+.rt-sec-body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sp) * 0.9em);
+  min-width: 0;
+}
+
+.rt-sec-title {
+  font-family: var(--font-head);
+  font-size: 0.96em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: var(--head-tt);
+  color: var(--accent-text);
+  line-height: 1.25;
+}
+
+.rt-h-underline .rt-sec-title {
+  border-bottom: 1.5px solid var(--accent);
+  padding-bottom: 0.28em;
+  color: var(--text);
+}
+
+.rt-h-caps-rule .rt-sec-title {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+}
+.rt-h-caps-rule .rt-sec-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.45;
+}
+
+.rt-h-side .rt-sec {
+  display: grid;
+  grid-template-columns: 8.4em 1fr;
+  column-gap: 1.4em;
+  align-items: start;
+}
+.rt-h-side .rt-sec-title {
+  font-size: 0.82em;
+  padding-top: 0.22em;
+}
+
+.rt-h-bar .rt-sec-title {
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 0.32em 0.8em;
+  border-radius: var(--radius-s);
+  letter-spacing: 0.12em;
+}
+
+.rt-h-plain .rt-sec-title {
+  font-size: 0.84em;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+.rt-h-block .rt-sec-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  color: var(--text);
+}
+.rt-h-block .rt-sec-title::before {
+  content: "";
+  width: 0.62em;
+  height: 0.62em;
+  background: var(--accent);
+  border-radius: var(--radius-s);
+  flex: none;
+}
+
+.rt-h-box .rt-sec-title {
+  border-left: 0.32em solid var(--accent);
+  background: var(--accent-soft);
+  padding: 0.3em 0.7em;
+  color: var(--text);
+}
+
+.rt-h-double .rt-sec-title {
+  border-top: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+  padding: 0.34em 0;
+  text-align: center;
+  letter-spacing: 0.16em;
+  color: var(--text);
+}
+
+.rt-h-serif .rt-sec-title {
+  font-size: 1.32em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  font-style: italic;
+  line-height: 1.15;
+}
+.rt-h-serif .rt-sec-title::after {
+  content: "";
+  display: block;
+  width: 2.6em;
+  height: 2px;
+  background: var(--accent);
+  margin-top: 0.35em;
+}
+
+/* Headings inside a coloured rail are always the same quiet style. */
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-sec-title {
+  display: block;
+  background: none;
+  padding: 0 0 0.4em;
+  border: 0;
+  border-bottom: 1px solid var(--on-ink-muted);
+  border-radius: 0;
+  color: var(--on-ink);
+  font-size: 0.86em;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: left;
+}
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-sec-title::before,
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-sec-title::after {
+  content: none;
+}
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-sec {
+  display: flex;
+}
+
+/* ----------------------------------------------------------------- entries */
+
+.rt-entry {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sp) * 0.28em);
+  min-width: 0;
+}
+
+.rt-entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1.2em;
+}
+
+.rt-entry-main {
+  min-width: 0;
+}
+
+.rt-entry-title {
+  font-size: 1.05em;
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.rt-entry-sub {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.rt-sep {
+  color: var(--accent-mid);
+}
+
+.rt-entry-date {
+  color: var(--muted);
+  font-size: 0.92em;
+  white-space: nowrap;
+  flex: none;
+}
+
+.rt-entry-text {
+  white-space: pre-line;
+}
+
+/* stacked: date sits under the company line */
+.rt-e-stacked .rt-entry-head {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05em;
+}
+.rt-e-stacked .rt-entry-date {
+  color: var(--accent-text);
+  font-size: 0.88em;
+}
+
+/* rail: date in a left gutter */
+.rt-e-rail .rt-entry {
+  display: grid;
+  grid-template-columns: 8.2em 1fr;
+  column-gap: 1.2em;
+  row-gap: calc(var(--sp) * 0.28em);
+}
+.rt-e-rail .rt-entry-head {
+  display: contents;
+}
+.rt-e-rail .rt-entry-date {
+  grid-column: 1;
+  grid-row: 1;
+  white-space: normal;
+  padding-top: 0.12em;
+  font-size: 0.88em;
+}
+.rt-e-rail .rt-entry-main {
+  grid-column: 2;
+  grid-row: 1;
+}
+.rt-e-rail .rt-entry-text,
+.rt-e-rail .rt-bullets {
+  grid-column: 2;
+}
+
+/* timeline: a line down the left with a dot per entry */
+.rt-e-timeline .rt-entry {
+  position: relative;
+  border-left: 2px solid var(--accent-mid);
+  padding-left: 1.1em;
+}
+.rt-e-timeline .rt-entry::before {
+  content: "";
+  position: absolute;
+  left: calc(-0.36em - 1px);
+  top: 0.38em;
+  width: 0.72em;
+  height: 0.72em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.rt-e-timeline .rt-entry-date {
+  color: var(--accent-text);
+  font-weight: 600;
+  font-size: 0.86em;
+}
+
+/* A side column is too narrow for a date gutter or a timeline: entries there
+   always stack, whatever the template does in the main column. */
+.rt .rt-side .rt-entry {
+  display: flex;
+  border-left: 0;
+  padding-left: 0;
+}
+.rt .rt-side .rt-entry::before {
+  content: none;
+}
+.rt .rt-side .rt-entry-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05em;
+}
+.rt .rt-side .rt-entry-date {
+  white-space: normal;
+  padding-top: 0;
+}
+
+/* ----------------------------------------------------------------- bullets */
+
+.rt-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sp) * 0.24em);
+  margin-top: 0.1em;
+}
+
+.rt-bullets li {
+  position: relative;
+  padding-left: 1.1em;
+}
+
+.rt-bullets li::before {
+  position: absolute;
+  left: 0.05em;
+  color: var(--accent-text);
+  content: "•";
+}
+.rt-b-dash .rt-bullets li::before {
+  content: "–";
+}
+.rt-b-square .rt-bullets li::before {
+  content: "▪";
+  font-size: 0.9em;
+  top: 0.04em;
+}
+.rt-b-arrow .rt-bullets li::before {
+  content: "›";
+  font-weight: 700;
+  left: 0.1em;
+}
+
+.rt-summary {
+  white-space: pre-line;
+}
+
+/* ------------------------------------------------------------------ skills */
+
+.rt-skillgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+.rt-skillname {
+  font-size: 0.9em;
+  font-weight: 650;
+  color: var(--muted);
+}
+
+.rt-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 0.4em;
+}
+
+/* inline: "Technical: A, B, C" on one flowing line */
+.rt-s-inline .rt-skillgroup {
+  display: block;
+}
+.rt-s-inline .rt-skillname {
+  display: inline;
+  color: var(--text);
+  margin-right: 0.4em;
+}
+.rt-s-inline .rt-skillname::after {
+  content: ":";
+}
+.rt-s-inline .rt-skills {
+  display: inline;
+}
+.rt-s-inline .rt-skills li {
+  display: inline;
+}
+.rt-s-inline .rt-skills li:not(:last-child)::after {
+  content: ", ";
+}
+
+/* dots: items separated by bullets */
+.rt-s-dots .rt-skills {
+  display: block;
+}
+.rt-s-dots .rt-skills li {
+  display: inline;
+}
+.rt-s-dots .rt-skills li:not(:last-child)::after {
+  content: "  •  ";
+  color: var(--accent-mid);
+  white-space: pre;
+}
+
+.rt-s-chips .rt-skills li {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  padding: 0.16em 0.7em;
+  border-radius: var(--radius);
+  font-size: 0.95em;
+}
+
+.rt-s-outline .rt-skills li {
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 0.12em 0.65em;
+  border-radius: var(--radius);
+  font-size: 0.95em;
+}
+
+.rt-s-columns .rt-skills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.18em 1.4em;
+}
+.rt-s-columns .rt-skills li {
+  position: relative;
+  padding-left: 0.95em;
+}
+.rt-s-columns .rt-skills li::before {
+  content: "▪";
+  position: absolute;
+  left: 0;
+  color: var(--accent-text);
+  font-size: 0.9em;
+  top: 0.04em;
+}
+
+.rt-s-stack .rt-skills {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0.18em;
+}
+
+/* In narrow side columns, multi-column skill lists fall back to one. */
+.rt-s-columns .rt-side .rt-skills {
+  grid-template-columns: 1fr;
+}
+
+/* ---------------------------------------------------------------- languages */
+
+.rt-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em 1.6em;
+}
+.rt-langs li {
+  display: flex;
+  gap: 0.5em;
+  align-items: baseline;
+}
+.rt-lang-name {
+  font-weight: 600;
+}
+.rt-lang-level {
+  color: var(--muted);
+  font-size: 0.92em;
+}
+.rt-side .rt-langs {
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+/* --------------------------------------------------- coloured-rail content */
+
+.rt[class*="rt-l-sidebar-"] .rt-side {
+  --text: var(--on-ink);
+  --muted: var(--on-ink-muted);
+  --rule: var(--on-ink-muted);
+}
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-entry-title,
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-lang-name {
+  color: var(--on-ink);
+}
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-contact {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0.35em;
+  color: var(--on-ink);
+  font-size: 0.95em;
+}
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-bullets li::before,
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-s-columns .rt-skills li::before,
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-sep {
+  color: var(--on-ink-muted);
+}
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-skills li {
+  color: var(--on-ink);
+}
+.rt[class*="rt-l-sidebar-"] .rt-side.rt-s-chips .rt-skills li,
+.rt.rt-s-chips[class*="rt-l-sidebar-"] .rt-side .rt-skills li {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--on-ink);
+}
+.rt.rt-s-outline[class*="rt-l-sidebar-"] .rt-side .rt-skills li {
+  border-color: var(--on-ink-muted);
+}
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-skillname {
+  color: var(--on-ink-muted);
+}
+.rt[class*="rt-l-sidebar-"] .rt-side .rt-entry-date {
+  color: var(--on-ink-muted);
+}
+
+/* Contact block in a plain (non-rail) side column. */
+.rt-side .rt-contact {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0.3em;
+}
+
+/* ---------------------------------------------------- per-template touches */
+
+.rt[data-template="tokyo"] .rt-jobtitle {
+  font-size: 0.82em;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.rt[data-template="tokyo"] .rt-header {
+  padding-bottom: calc(var(--sp) * 0.4em);
+}
+
+.rt[data-template="paris"] .rt-header::after,
+.rt[data-template="rome"] .rt-header::after {
+  content: "";
+  display: block;
+  width: 3.2em;
+  height: 2px;
+  background: var(--accent);
+  margin-top: 0.4em;
+}
+.rt[data-template="paris"] .rt-jobtitle {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.rt[data-template="ottawa"] .rt-id {
+  width: 100%;
+  border-bottom: 3px double var(--accent);
+  padding-bottom: 0.55em;
+}
+
+.rt[data-template="london"] .rt-jobtitle,
+.rt[data-template="athens"] .rt-jobtitle {
+  color: var(--muted);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.rt[data-template="berlin"] {
+  border-top: 14px solid #111111;
+}
+.rt[data-template="berlin"] .rt-jobtitle {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.9em;
+  color: var(--text);
+  font-weight: 600;
+}
+.rt[data-template="berlin"] .rt-sec-title {
+  background: #111111;
+  color: #ffffff;
+  border-left-color: var(--accent);
+}
+
+.rt[data-template="helsinki"] .rt-entry-date,
+.rt[data-template="helsinki"] .rt-sec-title {
+  font-family: var(--font-head);
+}
+
+.rt[data-template="seoul"] .rt-jobtitle {
+  font-family: var(--font-head);
+}
+
+.rt[data-template="cairo"] .rt-jobtitle {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.86em;
+  color: var(--muted);
+}
+
+.rt[data-template="abu-dhabi"] .rt-jobtitle {
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  opacity: 1;
+}
+.rt[data-template="abu-dhabi"] .rt-sec-title {
+  border-bottom-color: var(--accent);
+}
+
+.rt[data-template="wellington"] .rt-name {
+  color: var(--accent-text);
+}
+.rt[data-template="amsterdam"] .rt-name {
+  color: var(--accent-text);
+}
+
+.rt[data-template="lisbon"] .rt-jobtitle {
+  color: var(--on-ink);
+}
+
+.rt[data-template="vienna"] .rt-name {
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------- ATS mode */
+
+.rt-ats {
+  font-family: var(--font-body);
+}
+.rt-ats .rt-name {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 700;
+  font-size: 2em;
+  color: #111111;
+}
+.rt-ats .rt-jobtitle {
+  color: #111111;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 1.05em;
+}
+.rt-ats .rt-sec-title {
+  color: #111111;
+  background: none;
+  letter-spacing: 0.06em;
+}
+.rt-ats .rt-entry-date,
+.rt-ats .rt-entry-sub {
+  color: #333333;
+}
+.rt-ats .rt-bullets li::before {
+  color: #111111;
+}
+.rt-ats .rt-sep {
+  color: #333333;
+}
+.rt-ats .rt-header::after,
+.rt-ats .rt-id {
+  border: 0;
+}
+.rt-ats .rt-header::after {
+  content: none;
+}
+.rt-ats.rt[data-template] {
+  border-top: 0;
+}

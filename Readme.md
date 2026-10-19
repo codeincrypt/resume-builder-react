@@ -1,108 +1,210 @@
-# Resume Builder (Clone of Resume.io)
+# CapitalCV
 
-A web application that allows users to create professional resumes effortlessly. Users can log in using their Gmail accounts, choose from a variety of pre-designed templates, and customize their resumes to suit their needs.
+A resume builder. Sign in with Google or email. Upload an existing resume, or start
+from scratch. Review what was extracted, pick one of 25 capital-city templates,
+customise it with a live multi-page preview, and download a PDF.
 
----
+Upload parsing is **rule-based and runs in the browser**. It uses PDF/DOCX/TXT text
+extraction, OCR for scanned PDFs, and pattern matching. No AI or LLM is involved.
 
 ## Features
 
-- **User Authentication**: Log in using your Gmail account for a seamless experience.
-- **Template Selection**: Choose from multiple professionally designed templates.
-- **Customization**: Personalize your resume to reflect your style and needs.
-- **Create Your Own Templates**: Design and contribute your templates to the platform by raising a pull request (PR).
+- **Accounts.** Google sign-in, plus email/password with email verification and password reset. Users can change their password, export their data and delete their account.
+- **Dashboard.** Recent and all resumes, with search, sort and filter. Rename, duplicate and delete (with confirmation), continue editing or download a PDF. Includes the template gallery and empty states for new users.
+- **Upload and prefill.** PDF, DOCX and TXT up to 10 MB, with progress and retry.
+  - Scanned PDFs are read with OCR.
+  - A review screen highlights missing or uncertain fields and shows the raw extracted text.
+  - The user can optionally keep the original file.
+- **25 templates.** Each is named for a capital and built from its own combination of layout, header, heading, entry and skill styles, typography and palette. Filters: Professional, Modern, Minimal, Creative, Executive, Academic and ATS-Friendly.
+- **Editor.** Edit every section: personal info, summary, experience, education, skills, projects, certifications, languages, awards, volunteer work and custom sections.
+  - Add, delete and reorder entries and bullet points. Reorder or hide sections, and force page breaks.
+  - Design controls: font, font size, accent colour, spacing, margins, A4 or US Letter, and ATS mode.
+  - Autosave.
+- **Live preview.** Zoom, page boundaries, page count, full-screen mode and instant template switching. On mobile, the editor switches between Edit and Preview.
+- **PDF export.** Pixel-matched to the preview, multi-page with no clipped blocks, with selectable and searchable text. There is also a print option that produces vector output.
 
----
+## Tech stack
 
-## Tech Stack
+| Concern        | Choice                                                         |
+| -------------- | -------------------------------------------------------------- |
+| Build          | Vite 8 + TypeScript 5.9 (strict)                               |
+| UI             | React 19, Ant Design 6                                         |
+| State          | Redux Toolkit (+ redux-persist for UI preferences only)        |
+| Routing        | React Router 7                                                 |
+| Auth           | Firebase Authentication (Google + email/password)             |
+| Data / files   | Cloud Firestore, Cloud Storage (optional)                      |
+| Parsing        | pdf.js, mammoth (DOCX), tesseract.js (OCR) — all lazy-loaded   |
+| PDF export     | html2canvas-pro + jsPDF (lazy-loaded)                          |
+| Fonts          | Fontsource (self-hosted variable fonts)                        |
 
-- **Frontend**: React.js for building a responsive and user-friendly interface.
-- **Database**: Firebase Firestore for secure data storage.
-- **Hosting**: Deployed on Netlify for fast and reliable access.
+## Getting started
 
----
+Requires Node 20.19+ or 22.12+.
 
-## Getting Started
+```bash
+npm install
+cp .env.example .env   # fill in your Firebase web config (below)
+npm run dev            # http://localhost:3000
+```
 
-Follow the steps below to set up the project locally:
+Other scripts:
 
-### Prerequisites
+```bash
+npm run build      # typecheck + production build -> build/
+npm run preview    # serve the production build
+npm run lint
+npm run typecheck
+npm test           # resume-parser tests (node:test)
+npm run emulators  # local Auth/Firestore/Storage emulators (needs firebase-tools)
+```
 
-Ensure you have the following installed:
-- [Node.js](https://nodejs.org/) (version 14.x or later)
-- [Firebase CLI](https://firebase.google.com/docs/cli)
+### Run locally with no cloud project
 
-### Installation
+Use the Firebase Emulator Suite. Install `firebase-tools` globally
+(`npm i -g firebase-tools`). Recent versions need Java 21+; on Java 17 use
+`npm i -g firebase-tools@13`. Then:
 
-1. Clone the repository:
+```bash
+npm run emulators
+# in another terminal:
+VITE_USE_FIREBASE_EMULATORS=true VITE_FIREBASE_API_KEY=demo \
+VITE_FIREBASE_PROJECT_ID=demo-capitalcv VITE_FIREBASE_AUTH_DOMAIN=localhost \
+VITE_FIREBASE_STORAGE_BUCKET=demo-capitalcv.appspot.com npm run dev
+```
+
+The emulators enforce the same rules as production. They don't send email: the
+verification and password-reset links are printed in the emulator log. You can
+also list them at
+`http://127.0.0.1:9099/emulator/v1/projects/demo-capitalcv/oobCodes`.
+
+## Firebase setup
+
+1. **Create a project** at <https://console.firebase.google.com>. Add a *Web app*
+   and copy its config into `.env`. These `VITE_FIREBASE_*` values are public by
+   design. Never put server secrets in a `VITE_` variable: they ship to the browser.
+2. **Authentication → Sign-in method.** Enable:
+   - **Email/Password.**
+   - **Google.** Choose a support email. Firebase creates the Google OAuth client
+     for you, so no separate client ID is needed.
+3. **Authentication → Settings → Authorized domains.** Add every domain you serve
+   from, e.g. `your-site.netlify.app`. `localhost` is there by default.
+4. **(Recommended) Authentication → Templates.** Customise the verification and
+   reset emails. Set the action URL domain to your site.
+5. **Firestore Database.** Create it in production mode.
+6. **Storage (optional).** Needed only for "Keep a copy of my original file".
+   New buckets require the Blaze plan. Without `VITE_FIREBASE_STORAGE_BUCKET` the
+   option is hidden and everything else works.
+7. **Deploy the security rules.** This step is required: the rules are the access
+   control.
+
    ```bash
-   git clone https://github.com/your-username/resume-builder.git
-   cd resume-builder
+   npm i -g firebase-tools
+   firebase login
+   firebase use --add          # pick your project (replaces demo-capitalcv in .firebaserc)
+   firebase deploy --only firestore:rules,storage
    ```
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+### Data model and access control
 
-3. Set up Firebase:
-   - Create a Firebase project in the [Firebase Console](https://console.firebase.google.com/).
-   - Copy your Firebase configuration and create a `.env` file in the project root:
-     ```env
-     REACT_APP_API_KEY=YOUR_API_KEY
-     REACT_APP_AUTH_DOMAIN=YOUR_AUTH_DOMAIN
-     REACT_APP_PROJECT_ID=YOUR_PROJECT_ID
-     REACT_APP_STORAGE_BUCKET=YOUR_STORAGE_BUCKET
-     REACT_APP_MESSAGING_SENDER_ID=YOUR_MESSAGING_SENDER_ID
-     REACT_APP_APP_ID=YOUR_APP_ID
-     ```
+```
+users/{uid}                      profile (name, email, provider, timestamps)
+users/{uid}/resumes/{resumeId}   one document per resume
+Storage: users/{uid}/uploads/{resumeId}/{file}   kept originals only
+```
 
-4. Start the development server:
-   ```bash
-   npm start
-   ```
-
-Access the app at `http://localhost:3000`.
-
----
+[firestore.rules](firestore.rules) only lets the signed-in owner (`request.auth.uid
+== uid`) with a **verified email** read or write under their own `users/{uid}`. It
+also validates the shape and size of every resume. [storage.rules](storage.rules)
+does the same for files, and only accepts PDF, DOCX or TXT under 10 MB. Nothing
+crosses users, so no rule allows it.
 
 ## Deployment
 
-To deploy the app on Netlify:
+The app is a static SPA. Run `npm run build` and serve `build/`. Every
+client-side route must fall back to `index.html`. Both hosts below are already
+configured for that, for long-term caching of fingerprinted assets, and for
+basic security headers (`nosniff`, `Referrer-Policy`, `X-Frame-Options: DENY`,
+`Permissions-Policy`).
 
-1. Build the project:
-   ```bash
-   npm run build
-   ```
+- **Netlify.** Build command `npm run build`, publish directory `build`.
+  [public/_redirects](public/_redirects) and [public/_headers](public/_headers)
+  ship with the build.
+- **Firebase Hosting.** The `hosting` block in [firebase.json](firebase.json)
+  serves `build/`, so you only need `npm run build && firebase deploy --only hosting`.
 
-2. Deploy the `build` folder to Netlify using the Netlify CLI or the Netlify dashboard.
+Set the `VITE_*` variables in the host's build environment. Then add the deployed
+domain to Firebase Auth → Authorized domains.
 
----
+A Content-Security-Policy isn't set by default. Google sign-in, Firestore,
+Storage and (unless self-hosted) the OCR CDN each need explicit allowances,
+and a wrong policy silently breaks sign-in. If you add one, start from
+`default-src 'self'` and allow:
 
-## Contribution
+- `connect-src https://*.googleapis.com https://*.firebaseio.com`
+- `frame-src https://*.firebaseapp.com https://accounts.google.com`
+- `script-src 'self' 'wasm-unsafe-eval' https://apis.google.com`
+- `style-src 'self' 'unsafe-inline'` (Ant Design injects styles)
+- `img-src 'self' data: blob: https:`
+- `worker-src 'self' blob:`
+- `cdn.jsdelivr.net`, if OCR assets aren't self-hosted
 
-Contributions are welcome! If you'd like to contribute:
+Test sign-in on a preview deploy before going live.
 
-1. Fork the repository.
-2. Create a new branch:
-   ```bash
-   git checkout -b feature/new-template
-   ```
-3. Make your changes and commit them:
-   ```bash
-   git commit -m "Added a new resume template"
-   ```
-4. Push your branch:
-   ```bash
-   git push origin feature/new-template
-   ```
-5. Open a pull request.
+## File processing
 
----
+All parsing happens in the browser ([src/parsing](src/parsing)):
 
-## License
+| Format | Library      | Notes                                                         |
+| ------ | ------------ | ------------------------------------------------------------- |
+| PDF    | pdf.js       | Text layer rebuilt into lines in reading order (multi-column aware). Up to 15 pages. |
+| Scan   | tesseract.js | Used automatically when a PDF has no text layer.               |
+| DOCX   | mammoth      | Keeps bullets and table rows. Text boxes aren't extracted; save as PDF instead. |
+| TXT    | —            | UTF-8.                                                         |
 
-This project is licensed under the [MIT License](LICENSE).
+Files are validated by extension, MIME type **and** leading bytes (`%PDF`, ZIP
+header, no NULs in text), and must be at most 10 MB. Legacy `.doc` files are
+rejected with a hint to save as `.docx`.
 
----
+The parser ([parseResume.ts](src/parsing/parseResume.ts),
+[patterns.ts](src/parsing/patterns.ts)) works as follows:
 
-Feel free to explore, create, and contribute to the project!
+- It finds section headings from a vocabulary, then contact details by pattern, then entries anchored on date ranges.
+- It tells titles from companies from places using word lists.
+- It keeps original wording, leaves unknown values blank, and keeps unrecognised sections as custom sections.
+- It returns a list of `issues` (missing or uncertain fields) that the review screen highlights.
+
+### OCR assets
+
+By default tesseract.js downloads its worker, WASM core and English language data
+from a public CDN on first use. The document itself never leaves the browser. To
+self-host:
+
+```bash
+npm run ocr:assets       # copies worker + core into public/ocr/
+curl -L -o public/ocr/eng.traineddata.gz \
+  https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng/4.0.0_best_int/eng.traineddata.gz
+# then set VITE_OCR_ASSET_PATH=/ocr
+```
+
+## PDF export
+
+The same `ResumeSheet` renders the preview and the PDF:
+
+1. Fixed widths: 794px = A4, 816px = Letter at 96 dpi.
+2. [paginate.ts](src/resume/paginate.ts) pushes any block that would straddle a page boundary onto the next page.
+3. [pdf.ts](src/utils/pdf.ts) rasterises each page at 2–2.5× and lays an invisible text layer over it at the measured position of every word.
+
+The result looks exactly like the preview and has selectable, searchable text.
+The invisible text uses a standard PDF font, so it covers Latin scripts; other
+scripts still render visually. **Print** sends the same sheet to the browser's
+print dialog as vector text. No server or extra setup is needed.
+
+## Privacy
+
+- Uploaded resumes are parsed locally. Originals are stored only on request.
+- Nothing is used for AI training.
+- Deleting a resume deletes its original file. Deleting the account deletes all resumes, files and the profile.
+- Fonts are self-hosted, and there are no analytics.
+
+See the in-app Privacy Policy (`/privacy`) for the user-facing version, including
+retention.
