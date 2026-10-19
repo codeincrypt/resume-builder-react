@@ -4,6 +4,9 @@
   "version": "3.0.0",
   "type": "module",
   "description": "CapitalCV \u2014 upload or build a resume, pick from 25 capital-city templates, download a PDF.",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

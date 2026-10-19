@@ -126,7 +126,9 @@ configured for that, for long-term caching of fingerprinted assets, and for
 basic security headers (`nosniff`, `Referrer-Policy`, `X-Frame-Options: DENY`,
 `Permissions-Policy`).
 
-- **Netlify.** Build command `npm run build`, publish directory `build`.
+- **Netlify.** [netlify.toml](netlify.toml) sets the build command
+  (`npm run build`), publish directory (`build`) and Node 22 — Netlify's
+  default of Node 18 for older sites can't run Vite 8.
   [public/_redirects](public/_redirects) and [public/_headers](public/_headers)
   ship with the build.
 - **Firebase Hosting.** The `hosting` block in [firebase.json](firebase.json)

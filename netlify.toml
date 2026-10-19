@@ -1,0 +1,9 @@
+# Redirects and headers live in public/_redirects and public/_headers.
+[build]
+  command = "npm run build"
+  publish = "build"
+
+[build.environment]
+  # Vite 8 / rolldown need Node ^20.19 or >=22.12; Netlify's default for older
+  # sites is Node 18, which fails with "node:util does not provide styleText".
+  NODE_VERSION = "22"
